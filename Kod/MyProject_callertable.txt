@@ -2,6 +2,7 @@ main
 	__CC2DW
 		____DoICP
 	init_program
+		Keypad_Init
 		Lcd_Init
 			Delay_5500us
 			Delay_1us
@@ -9,7 +10,6 @@ main
 			Delay_1us
 			Delay_5500us
 			Delay_50us
-		Keypad_Init
 	choseMode
 		Lcd_Cmd
 			Delay_1us

@@ -15,9 +15,9 @@ sbit LCD_D7_Direction at TRISB3_bit;
 
 char  keypadPort at PORTD;
 
-char modes[][6]={"ARIT","CONV","SHIF","MODE:"};
-char dataTypes[][4]={"BIN","DEC","OCT","HEX"};
-char operationsTitles[][2]={"+","-","/","*"};
+
+
+
 
 short modeIndex=0;
 int dataTypeIndex[2];
@@ -45,8 +45,9 @@ int detectOneEnterClick(){
     return 0;
 }
 void choseMode(){
+     char modes[][6]={"ARIT","CONV","SHIF","MODE:"};
      Lcd_Cmd(_LCD_CLEAR);
-     while(1){
+     do{
 
          if(Keypad_Key_Click()==1){
                 Lcd_Cmd(_LCD_CLEAR);
@@ -72,10 +73,14 @@ void choseMode(){
 
           
           }
-     }
+     }while(1);
 
 }
-int setType(char title[],int index){
+int index=0;
+void setType(char title[]){
+    //int tmpIndex=index;
+    char dataTypes[][4]={"BIN","DEC","OCT","HEX"};
+    do{
      if(Keypad_Key_Click()==1){
             Lcd_Cmd(_LCD_CLEAR);
             dataTypeIndex[index]++;
@@ -84,19 +89,22 @@ int setType(char title[],int index){
             }
      }
      else if(detectOneEnterClick()){
-            return 1;
+            return;
      }
      Lcd_Out(1,1,title);
      Lcd_Out(2,1,dataTypes[dataTypeIndex[index]]);
-     return 0;
+     }while(1);
 }
 void choseDataTypes(){
         if(modeIndex==0||modeIndex==2){
-                while(!setType("IN TYPE:",0));
+        index=0;
+                setType("IN TYPE:");
         }
         else{
-              while(!setType("IN TYPE:",0));
-              while(!setType("OUT TYPE:",1));
+        index=0;
+              setType("IN TYPE:");
+              index=1;
+              setType("OUT TYPE:");
 
         }
 
@@ -277,6 +285,7 @@ void loadNumbers(){
 }
 
 void choseOperation(){
+char operationsTitles[][2]={"+","-","/","*"};
       while(1){
 
          if(Keypad_Key_Click()==1){
@@ -346,6 +355,7 @@ void convertNumber(int num,int mode){
 }
 
  void choseShift(){
+      char titleSh[6]="MODE:";
     while(1){
            switch(shiftIndex){
                 case 0:
@@ -365,7 +375,7 @@ void convertNumber(int num,int mode){
           else if(detectOneEnterClick()){
                return;
           }
-           Lcd_Out(1,1,modes[3]);
+           Lcd_Out(1,1,titleSh);
 
      }
  
@@ -430,18 +440,19 @@ void doConvert(){
     Lcd_Out(2,1,arr);
 }
 void init_program(){
-        ANSELA = 0;
-        ANSELB = 0;
-        ANSELD = 0;
+        Keypad_Init();
+        //ANSELA = 0;
+       // ANSELB = 0;
+        //ANSELD = 0;
         Lcd_Init();
         Lcd_Cmd(_LCD_CLEAR);
         Lcd_Cmd(_LCD_CURSOR_OFF);
-        Keypad_Init();
 }
 void main() {
 
      init_program();
-     while(1){
+
+     do{
               choseMode();
               Lcd_Cmd(_LCD_CLEAR);
               choseDataTypes();
@@ -488,5 +499,6 @@ void main() {
                break;
               }
               while(!detectOneEnterClick());
-     }
+     }while(1);
+     return;
 }
